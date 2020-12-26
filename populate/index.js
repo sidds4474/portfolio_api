@@ -1,16 +1,18 @@
-const express = require('express');
-const server = express();
+const config = require('../config/dev');
+const mongoose = require('mongoose');
+const fakeDB = require('./FakeDB');
 
-async function runServer() {
-  await require('./db').connect();
-
-  server.use('/api/v1/portfolios', require('./routes/portfolios'));
-
-  const PORT = parseInt(process.env.PORT, 10) || 3002;
-  server.listen(PORT, (err) => {
-    if (err) console.error(err);
-    console.log('Server ready on port:', PORT);
-  })
-}
-
-runServer();
+mongoose.connect(config.DB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false
+}, async (err) => {
+  if (err) { console.error(err); }
+  else {
+    console.log('> Starting populating DB...')
+    await fakeDB.populate();
+    await mongoose.connection.close();
+    console.log('> DB has been populated...');
+  }
+})

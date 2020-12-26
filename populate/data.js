@@ -1,5 +1,5 @@
 const data = {
-  portfolios: [
+  projects: [
     {
       title: 'Job in Netcentric',
       company: 'Netcentric',
